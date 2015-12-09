@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.slf4j.Logger;
@@ -43,12 +44,13 @@ public class NamedLockBuildWrapperDescriptor extends BuildWrapperDescriptor {
 
     NamedLockBuildWrapperDescriptor() {
         super(NamedLockBuildWrapper.class);
+        load();
     }
 
     private String locksConfig;
     private transient Map<String, SemaphoreLock> locksMap;
 
-    public Lock takeLock(String conf) {
+    Lock takeLock(String conf) {
         if (locksMap == null) {
             Map<String, SemaphoreLock> map = createLocksMap(locksConfig);
             synchronized (this) {
@@ -146,7 +148,9 @@ public class NamedLockBuildWrapperDescriptor extends BuildWrapperDescriptor {
         return locksConfig;
     }
 
+    @DataBoundSetter
     public void setLocksConfig(String locksConfig) {
+        // TODO implement complex refreshing logic
         this.locksConfig = locksConfig;
     }
 

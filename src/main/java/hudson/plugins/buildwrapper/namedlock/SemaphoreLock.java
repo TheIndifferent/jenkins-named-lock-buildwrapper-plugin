@@ -37,7 +37,7 @@ class SemaphoreLock implements Lock {
     public SemaphoreLock(int max, String name) {
         this.max = max;
         this.name = name;
-        this.semaphore = new Semaphore(max);
+        this.semaphore = new Semaphore(max, true);
     }
 
     @Override

@@ -60,8 +60,10 @@ public class NamedLockBuildWrapper extends SimpleBuildWrapper {
             }
         });
         LOG.info("acquiring locks for: {}", requiredLocks);
+        tl.getLogger().println("NamedLock: acquiring locks for: " + requiredLocks);
         lock.acquire();
         LOG.info("locks acquired: {}", requiredLocks);
+        tl.getLogger().println("NamedLock: locks acquired: " + requiredLocks);
     }
 
     private void tearDownImpl(Lock lock) {
