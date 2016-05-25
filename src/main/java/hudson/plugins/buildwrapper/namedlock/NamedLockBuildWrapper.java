@@ -30,6 +30,7 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.IOException;
+import java.util.Date;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -60,16 +61,25 @@ public class NamedLockBuildWrapper extends SimpleBuildWrapper {
             }
         });
         LOG.info("acquiring locks for: {}", requiredLocks);
-        tl.getLogger().println("NamedLock: acquiring locks for: " + requiredLocks);
+        tl.getLogger().println("[NamedLock][" + new Date().toString() + "]: acquiring locks for: " + requiredLocks);
+        long start = System.currentTimeMillis();
         lock.acquire();
+        long time = System.currentTimeMillis() - start;
+        long s = time / 60l;
+        long m = s / 60l;
+        long h = m / 60l;
+        long d = h / 24l;
+        String waited = "waited: " + d + " days == " + h + " hours == " + m + " minutes ==" + s + " seconds";
         LOG.info("locks acquired: {}", requiredLocks);
-        tl.getLogger().println("NamedLock: locks acquired: " + requiredLocks);
+        LOG.info(waited);
+        tl.getLogger().println("[NamedLock][" + new Date().toString() + "]: locks acquired: " + requiredLocks);
+        tl.getLogger().println(waited);
     }
 
     private void tearDownImpl(Lock lock) {
-            LOG.info("releasing locks: {}", requiredLocks);
-            lock.release();
-            LOG.info("locks released: {}", requiredLocks);
+        LOG.info("releasing locks: {}", requiredLocks);
+        lock.release();
+        LOG.info("locks released: {}", requiredLocks);
     }
 
     public String getRequiredLocks() {
